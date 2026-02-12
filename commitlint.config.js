@@ -5,4 +5,8 @@ module.exports = {
     'scope-enum': [2, 'always', ['netanel', 'lagziel', 'workflow', 'config', 'ci']],
     'scope-empty': [0, 'never'], // Allow empty scope (0 = disabled)
   },
+  ignores: [
+    // Ignore the initial planning commit that was created before validation was added
+    (commit) => commit.includes('Initial plan'),
+  ],
 };
