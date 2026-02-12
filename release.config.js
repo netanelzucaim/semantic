@@ -21,21 +21,21 @@ module.exports = {
     [
       "@semantic-release/changelog",
       {
-        changelogFile: "README.md", // Updates the specific plugin's README
+        changelogFile: "CHANGELOG.md", // Writes a per-plugin changelog
       },
     ],
     [
       "@semantic-release/exec",
       {
-        // Injects the new version into your Docker build command
-        prepareCmd: `docker build -t \${process.env.DOCKER_REG_USERNAME}/${pluginName}:\${nextRelease.version} .`,
+        // Updates plugin version and builds a versioned image
+        prepareCmd: `npm version --no-git-tag-version \${nextRelease.version} && docker build -t \${process.env.DOCKER_REG_USERNAME}/${pluginName}:\${nextRelease.version} .`,
         publishCmd: `docker push \${process.env.DOCKER_REG_USERNAME}/${pluginName}:\${nextRelease.version}`,
       },
     ],
     [
       "@semantic-release/git",
       {
-        assets: ["README.md", "package.json"],
+        assets: ["CHANGELOG.md", "package.json"],
         message: `chore(${pluginName}): release \${nextRelease.version} [skip ci]`,
       },
     ],
