@@ -1,8 +1,8 @@
 name: Monorepo Release
 on:
   push:
-    branches: [ main ]
-    paths: [ 'plugins/**' ]
+    branches: [main]
+    paths: ["plugins/**"]
 
 jobs:
   release:
@@ -16,13 +16,14 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: "lts/*"
 
       - name: Install Global Tools
         run: |
           npm install -g semantic-release \
             @semantic-release/git @semantic-release/exec \
-            @semantic-release/changelog semantic-release-monorepo
+            @semantic-release/changelog @semantic-release/commit-analyzer \
+            @semantic-release/release-notes-generator semantic-release-monorepo
 
       - name: Run Manager
         env:
@@ -32,6 +33,3 @@ jobs:
           CI_PREV_COMMIT_SHA: ${{ github.event.before }}
           CI_COMMIT_SHA: ${{ github.event.after }}
         run: node manager.mjs
-
-
-
