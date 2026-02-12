@@ -1,3 +1,11 @@
+# [1.2.0](https://github.com/netanelzucaim/semantic/compare/netanel-v1.1.0...netanel-v1.2.0) (2026-02-12)
+
+
+### Features
+
+* add Docker Hub login step to release workflow ([98a669d](https://github.com/netanelzucaim/semantic/commit/98a669d9640f3fdde2436188a3cf87b6d6e2000f))
+* **netanel:** change my entrypoint ([cb3fabb](https://github.com/netanelzucaim/semantic/commit/cb3fabbf307a84c8fa6a7ff1128463fd7b1db568))
+
 # [1.1.0](https://github.com/netanelzucaim/semantic/compare/netanel-v1.0.0...netanel-v1.1.0) (2026-02-12)
 
 
