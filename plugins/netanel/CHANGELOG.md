@@ -1,3 +1,12 @@
+# [1.4.0](https://github.com/netanelzucaim/semantic/compare/netanel-v1.3.0...netanel-v1.4.0) (2026-02-12)
+
+
+### Features
+
+* **harel:** change my entrypoint ([4c47164](https://github.com/netanelzucaim/semantic/commit/4c47164f7827e670d5d008474fa565d09a89d0ef))
+* **harel:** change my entrypoint ([418385a](https://github.com/netanelzucaim/semantic/commit/418385a73bb9b9af56f3aa05e71235799a1c2e8e))
+* **netanel:** change my entrypoint ([42e23cf](https://github.com/netanelzucaim/semantic/commit/42e23cfb9b3df58c4a72ec822287d1e0e92df0ad))
+
 # [1.3.0](https://github.com/netanelzucaim/semantic/compare/netanel-v1.2.0...netanel-v1.3.0) (2026-02-12)
 
 
