@@ -3,6 +3,11 @@ const path = require('path');
 
 // Dynamically read plugin directory names
 const pluginsDir = path.join(__dirname, 'plugins');
+
+if (!fs.existsSync(pluginsDir)) {
+  console.warn('Warning: plugins directory not found. No scopes will be valid.');
+}
+
 const validScopes = fs.existsSync(pluginsDir)
   ? fs.readdirSync(pluginsDir).filter(item => {
       return fs.statSync(path.join(pluginsDir, item)).isDirectory();
@@ -18,6 +23,6 @@ module.exports = {
   },
   ignores: [
     // Ignore the initial planning commit that was created before validation was added
-    (commit) => commit.includes('Initial plan'),
+    (commit) => commit.trim() === 'Initial plan',
   ],
 };
