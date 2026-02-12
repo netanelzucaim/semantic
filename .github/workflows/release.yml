@@ -156,3 +156,6 @@ jobs:
           CI_PREV_COMMIT_SHA: ${{ github.event.before }}
           CI_COMMIT_SHA: ${{ github.event.after }}
         run: node manager.mjs
+
+
+        
