@@ -64,6 +64,8 @@ All commits **must** follow the [Conventional Commits](https://www.conventionalc
 | `test` | Adding or updating tests | Patch (1.0.x) |
 | `chore` | Maintenance tasks | Patch (1.0.x) |
 
+> **Note**: This project is configured so that **any commit type** with a valid scope triggers at least a patch release. Only `feat` commits trigger a minor version bump. To trigger a major version bump, include `BREAKING CHANGE:` in the commit body.
+
 ### Available Scopes (Plugin Names)
 
 The scope must match one of the plugin directories:
