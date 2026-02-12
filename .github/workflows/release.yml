@@ -2,7 +2,7 @@ name: Monorepo Release
 on:
   push:
     branches: [ main ]
-    # paths: [ 'plugins/**' ]
+    paths: [ 'plugins/**' ]
 
 jobs:
   release:
