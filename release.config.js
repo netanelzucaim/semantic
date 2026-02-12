@@ -28,7 +28,7 @@ module.exports = {
       "@semantic-release/exec",
       {
         // Updates plugin version and builds a versioned image
-        prepareCmd: `npm version --no-git-tag-version \${nextRelease.version} && docker build -t \${process.env.DOCKER_REG_USERNAME}/${pluginName}:\${nextRelease.version} .`,
+        prepareCmd: `npm pkg set version=\${nextRelease.version} && docker build -t \${process.env.DOCKER_REG_USERNAME}/${pluginName}:\${nextRelease.version} .`,
         publishCmd: `docker push \${process.env.DOCKER_REG_USERNAME}/${pluginName}:\${nextRelease.version}`,
       },
     ],
