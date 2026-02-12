@@ -5,7 +5,117 @@ on:
     paths: ["plugins/**"]
 
 jobs:
+  validate-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate Commit Messages
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Get plugin directories
+            const pluginsDir = path.join(process.env.GITHUB_WORKSPACE, 'plugins');
+            const validScopes = fs.readdirSync(pluginsDir).filter(item => {
+              return fs.statSync(path.join(pluginsDir, item)).isDirectory();
+            });
+            
+            console.log('📁 Valid plugin scopes:', validScopes.join(', '));
+            
+            // Get commits to validate
+            const commits = context.payload.commits || [];
+            
+            if (commits.length === 0) {
+              console.log('⚠️  No commits found in payload, skipping validation');
+              return;
+            }
+            
+            // Conventional commit regex
+            const conventionalCommitRegex = /^(feat|fix|docs|style|refactor|perf|test|chore)(\(([^)]+)\))?:\s+(.+)/;
+            const validTypes = ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'chore'];
+            
+            let hasErrors = false;
+            const errors = [];
+            
+            for (const commit of commits) {
+              const message = commit.message.split('\n')[0]; // Get first line
+              
+              // Skip merge commits
+              if (message.startsWith('Merge ')) {
+                console.log(`⏭️  Skipping merge commit: ${commit.id.substring(0, 7)}`);
+                continue;
+              }
+              
+              // Skip automated release commits
+              if (message.includes('[skip ci]')) {
+                console.log(`⏭️  Skipping automated commit: ${commit.id.substring(0, 7)}`);
+                continue;
+              }
+              
+              console.log(`\n🔍 Validating commit ${commit.id.substring(0, 7)}: "${message}"`);
+              
+              const match = message.match(conventionalCommitRegex);
+              
+              if (!match) {
+                hasErrors = true;
+                errors.push({
+                  commit: commit.id.substring(0, 7),
+                  message: message,
+                  problem: 'Does not follow Conventional Commits format',
+                  details: `Expected format: type(scope): message\nValid types: ${validTypes.join(', ')}`
+                });
+                continue;
+              }
+              
+              const [, type, , scope, description] = match;
+              
+              // Check if scope is provided and valid
+              if (!scope) {
+                hasErrors = true;
+                errors.push({
+                  commit: commit.id.substring(0, 7),
+                  message: message,
+                  problem: 'Missing scope',
+                  details: `Scope is required and must match a plugin directory.\nAvailable scopes: ${validScopes.join(', ')}`
+                });
+                continue;
+              }
+              
+              if (!validScopes.includes(scope)) {
+                hasErrors = true;
+                errors.push({
+                  commit: commit.id.substring(0, 7),
+                  message: message,
+                  problem: `The scope '${scope}' doesn't match any plugin directory`,
+                  details: `Available plugin scopes:\n${validScopes.map(s => `  - ${s}`).join('\n')}\n\nExamples of valid commit messages:\n  - feat(${validScopes[0]}): add new feature\n  - fix(${validScopes[1] || validScopes[0]}): fix bug`
+                });
+                continue;
+              }
+              
+              console.log(`✅ Valid commit message`);
+            }
+            
+            if (hasErrors) {
+              console.log('\n❌ Commit message validation failed!\n');
+              for (const error of errors) {
+                console.log(`Commit: ${error.commit}`);
+                console.log(`Message: "${error.message}"`);
+                console.log(`Problem: ${error.problem}`);
+                console.log(`\n${error.details}\n`);
+                console.log('---\n');
+              }
+              core.setFailed('One or more commits do not follow the required format');
+            } else {
+              console.log('\n✅ All commit messages are valid!');
+            }
+
   release:
+    needs: validate-commits
     runs-on: ubuntu-latest
     permissions:
       contents: write
