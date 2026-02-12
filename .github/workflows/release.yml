@@ -27,11 +27,25 @@ jobs:
             
             console.log('📁 Valid plugin scopes:', validScopes.join(', '));
             
-            // Get commits to validate
-            const commits = context.payload.commits || [];
+            // Get commits to validate - use API if payload is incomplete
+            let commits = context.payload.commits || [];
             
             if (commits.length === 0) {
-              console.log('⚠️  No commits found in payload, skipping validation');
+              // Fetch commits from API for more reliable results
+              const { data: compareData } = await github.rest.repos.compareCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                base: context.payload.before,
+                head: context.payload.after,
+              });
+              commits = compareData.commits.map(c => ({
+                id: c.sha,
+                message: c.commit.message,
+              }));
+            }
+            
+            if (commits.length === 0) {
+              console.log('⚠️  No commits found, skipping validation');
               return;
             }
             
@@ -88,11 +102,12 @@ jobs:
               
               if (!validScopes.includes(scope)) {
                 hasErrors = true;
+                const exampleScope = validScopes[0];
                 errors.push({
                   commit: commit.id.substring(0, 7),
                   message: message,
                   problem: `The scope '${scope}' doesn't match any plugin directory`,
-                  details: `Available plugin scopes:\n${validScopes.map(s => `  - ${s}`).join('\n')}\n\nExamples of valid commit messages:\n  - feat(${validScopes[0]}): add new feature\n  - fix(${validScopes[1] || validScopes[0]}): fix bug`
+                  details: `Available plugin scopes:\n${validScopes.map(s => `  - ${s}`).join('\n')}\n\nExamples of valid commit messages:\n  - feat(${exampleScope}): add new feature\n  - fix(${exampleScope}): fix bug`
                 });
                 continue;
               }
