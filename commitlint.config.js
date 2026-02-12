@@ -1,8 +1,19 @@
+const fs = require('fs');
+const path = require('path');
+
+// Dynamically read plugin directory names
+const pluginsDir = path.join(__dirname, 'plugins');
+const validScopes = fs.existsSync(pluginsDir)
+  ? fs.readdirSync(pluginsDir).filter(item => {
+      return fs.statSync(path.join(pluginsDir, item)).isDirectory();
+    })
+  : [];
+
 module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
-    // Scope is optional, but if provided, must match plugin names or infrastructure scopes
-    'scope-enum': [2, 'always', ['netanel', 'lagziel', 'workflow', 'config', 'ci']],
+    // Scope must match a plugin folder name from plugins/ directory
+    'scope-enum': [2, 'always', validScopes],
     'scope-empty': [0, 'never'], // Allow empty scope (0 = disabled)
   },
   ignores: [
