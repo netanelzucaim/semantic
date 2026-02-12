@@ -1,0 +1,19 @@
+{
+  "name": "semantic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "release.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^7.1.0",
+    "@semantic-release/git": "^10.0.1",
+    "semantic-release": "^25.0.3",
+    "semantic-release-monorepo": "^8.0.2"
+  }
+}
